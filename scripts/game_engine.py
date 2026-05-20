@@ -111,7 +111,7 @@ def new_game_state(chat_id_p2, offset=0):
     }
     return json.dumps(state)
 
-def apply_move(state_json, coord, firing_player):
+def apply_move(state_json, coord, firing_player, current_offset=None):
     state = json.loads(state_json)
     if firing_player == "P1":
         result, sunk = fire(
@@ -123,9 +123,12 @@ def apply_move(state_json, coord, firing_player):
             state["board_p1"], state["hits_p2"],
             state["ships_p1"], coord
         )
+    # Always update offset if provided
+    if current_offset is not None:
+        state["offset"] = int(current_offset)
     if result in ["INVALID", "ALREADY_FIRED"]:
         return json.dumps({"result": result, "sunk": None,
-                           "state": state_json, "game_over": False})
+                           "state": json.dumps(state), "game_over": False})
     if firing_player == "P1":
         game_over = is_game_over(state["ships_p2"], state["hits_p1"])
         state["turn"] = "P2" if not game_over else "DONE"
