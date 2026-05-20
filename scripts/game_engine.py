@@ -94,7 +94,7 @@ def render_board(board, hit_overlay, hide_ships=True):
         lines.append(row + " " + " ".join(cells))
     return "\n".join(lines)
 
-def new_game_state(chat_id_p2):
+def new_game_state(chat_id_p2, offset=0):
     board_p1, ships_p1 = place_ships_random(empty_board())
     board_p2, ships_p2 = place_ships_random(empty_board())
     state = {
@@ -107,7 +107,7 @@ def new_game_state(chat_id_p2):
         "ships_p2": ships_p2,
         "hits_p1": empty_board(),
         "hits_p2": empty_board(),
-        "offset": 0
+        "offset": int(offset)
     }
     return json.dumps(state)
 

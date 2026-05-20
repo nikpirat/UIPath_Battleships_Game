@@ -1,5 +1,6 @@
 <Activity mc:Ignorable="sap sap2010" x:Class="PlaceShips" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:p="http://schemas.uipath.com/workflow/activities/python" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
+    <x:Property Name="in_Offset" Type="InArgument(x:Int32)" />
     <x:Property Name="out_StateJson" Type="OutArgument(x:String)" />
     <x:Property Name="in_ScriptPath" Type="InArgument(x:String)" />
     <x:Property Name="in_ChatIdP2" Type="InArgument(x:String)" />
@@ -46,6 +47,7 @@
       <x:String>System.Linq.Expressions</x:String>
       <x:String>System.Runtime.Serialization</x:String>
       <x:String>UiPath.Core.Activities.Orchestrator</x:String>
+      <x:String>System.Numerics</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -96,9 +98,10 @@
       <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
       <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
       <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.Runtime.Numerics</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="PlaceShips" sap:VirtualizedContainerService.HintSize="1048,2482" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="PlaceShips" sap:VirtualizedContainerService.HintSize="1048,2327" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="njl:JObject" Name="jViews" />
       <Variable x:TypeArguments="x:String" Name="strBoardMsg" />
@@ -110,7 +113,7 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Sequence sap:VirtualizedContainerService.HintSize="486,2459" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <Sequence sap:VirtualizedContainerService.HintSize="486,2304" sap2010:WorkflowViewState.IdRef="Sequence_2">
       <Sequence.Variables>
         <Variable x:TypeArguments="x:Object" Name="objPythonNewStateResult" />
       </Sequence.Variables>
@@ -119,27 +122,19 @@
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="452,1943" sap2010:WorkflowViewState.IdRef="PythonScope_1" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
+      <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="452,1827" sap2010:WorkflowViewState.IdRef="PythonScope_1" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
         <p:PythonScope.Body>
           <ActivityAction x:TypeArguments="x:Object">
             <ActivityAction.Argument>
               <DelegateInArgument x:TypeArguments="x:Object" Name="PythonEngineSessionProperty" />
             </ActivityAction.Argument>
-            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,1689" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,1593" sap2010:WorkflowViewState.IdRef="Sequence_3">
               <Sequence.Variables>
-                <Variable x:TypeArguments="x:String" Name="strScriptGameEnginePath">
-                  <Variable.Default>
-                    <Literal x:TypeArguments="x:String">scripts/game_engine.py</Literal>
-                  </Variable.Default>
-                </Variable>
+                <Variable x:TypeArguments="x:String" Default="scripts/game_engine.py" Name="strScriptGameEnginePath" />
                 <Variable x:TypeArguments="p:PythonObject" Name="pyloadedGameEngineScript" />
                 <Variable x:TypeArguments="p:PythonObject" Name="pyBoardViews" />
                 <Variable x:TypeArguments="x:Object" Name="objPythonBoardViewsResult" />
-                <Variable x:TypeArguments="x:String" Name="strScriptHelperPath">
-                  <Variable.Default>
-                    <Literal x:TypeArguments="x:String">scripts/telegram_helper.py</Literal>
-                  </Variable.Default>
-                </Variable>
+                <Variable x:TypeArguments="x:String" Default="scripts/telegram_helper.py" Name="strScriptHelperPath" />
                 <Variable x:TypeArguments="p:PythonObject" Name="pyloadedHelperScript" />
                 <Variable x:TypeArguments="p:PythonObject" Name="pyNewState" />
               </Sequence.Variables>
@@ -148,13 +143,13 @@
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,245" sap2010:WorkflowViewState.IdRef="LoadScript_1" Result="[pyloadedGameEngineScript]" ScriptFile="[strScriptGameEnginePath]" />
-              <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,245" sap2010:WorkflowViewState.IdRef="LoadScript_2" Result="[pyloadedHelperScript]" ScriptFile="[strScriptHelperPath]" />
-              <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,129" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" Instance="[pyloadedGameEngineScript]" Name="new_game_state" Parameters="[New Object() {in_ChatIdP2}]" Result="[pyNewState]" />
-              <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="416,129" sap2010:WorkflowViewState.IdRef="GetObject`1_1" PythonObject="[pyNewState]" Result="[objPythonNewStateResult]" />
-              <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,129" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" Instance="[pyloadedGameEngineScript]" Name="get_board_view" Parameters="[New Object() {pyNewState, &quot;P2&quot;}]" Result="[pyBoardViews]" />
-              <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="416,129" sap2010:WorkflowViewState.IdRef="GetObject`1_2" PythonObject="[pyBoardViews]" Result="[objPythonBoardViewsResult]" />
-              <Assign sap:VirtualizedContainerService.HintSize="416,187" sap2010:WorkflowViewState.IdRef="Assign_1">
+              <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="LoadScript_1" Result="[pyloadedGameEngineScript]" ScriptFile="[strScriptGameEnginePath]" />
+              <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="LoadScript_2" Result="[pyloadedHelperScript]" ScriptFile="[strScriptHelperPath]" />
+              <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" Instance="[pyloadedGameEngineScript]" Name="new_game_state" Parameters="[New Object() {in_ChatIdP2, in_Offset}]" Result="[pyNewState]" />
+              <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="GetObject`1_1" PythonObject="[pyNewState]" Result="[objPythonNewStateResult]" />
+              <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" Instance="[pyloadedGameEngineScript]" Name="get_board_view" Parameters="[New Object() {objPythonNewStateResult.ToString(), &quot;P2&quot;}]" Result="[pyBoardViews]" />
+              <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="GetObject`1_2" PythonObject="[pyBoardViews]" Result="[objPythonBoardViewsResult]" />
+              <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_1">
                 <Assign.To>
                   <OutArgument x:TypeArguments="njl:JObject">[jViews]</OutArgument>
                 </Assign.To>
@@ -162,7 +157,7 @@
                   <InArgument x:TypeArguments="njl:JObject">[Newtonsoft.Json.Linq.JObject.Parse(objPythonBoardViewsResult.ToString())]</InArgument>
                 </Assign.Value>
               </Assign>
-              <Assign sap:VirtualizedContainerService.HintSize="416,187" sap2010:WorkflowViewState.IdRef="Assign_2">
+              <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_2">
                 <Assign.To>
                   <OutArgument x:TypeArguments="x:String">[strBoardMsg]</OutArgument>
                 </Assign.To>
@@ -170,8 +165,8 @@
                   <InArgument x:TypeArguments="x:String">["Your ships have been placed:" + Environment.NewLine + jViews("own_view").ToString()]</InArgument>
                 </Assign.Value>
               </Assign>
-              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,129" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" Instance="[pyloadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, strBoardMsg}]" />
-              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,120" sap2010:WorkflowViewState.IdRef="InvokeMethod_4" Instance="[pyloadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;Waiting for Player 1... Game starts soon!&quot;}]" />
+              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" Instance="[pyloadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, strBoardMsg}]" />
+              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_4" Instance="[pyloadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;Waiting for Player 1... Game starts soon!&quot;}]" />
             </Sequence>
           </ActivityAction>
         </p:PythonScope.Body>
@@ -182,8 +177,8 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </p:PythonScope>
-      <ui:SetAsset TimeoutMS="{x:Null}" AssetName="BattleshipsState" DisplayName="Set Asset" FolderPath="nikpirat2@gmail.com's workspace" sap:VirtualizedContainerService.HintSize="452,255" sap2010:WorkflowViewState.IdRef="SetAsset_1" Value="[objPythonNewStateResult.ToString()]" />
-      <Assign sap:VirtualizedContainerService.HintSize="452,178" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <ui:SetAsset TimeoutMS="{x:Null}" AssetName="BattleshipsState" DisplayName="Set Asset" FolderPath="nikpirat2@gmail.com's workspace" sap:VirtualizedContainerService.HintSize="452,228" sap2010:WorkflowViewState.IdRef="SetAsset_1" Value="[objPythonNewStateResult.ToString()]" />
+      <Assign sap:VirtualizedContainerService.HintSize="452,166" sap2010:WorkflowViewState.IdRef="Assign_3">
         <Assign.To>
           <OutArgument x:TypeArguments="x:String">[out_StateJson]</OutArgument>
         </Assign.To>
