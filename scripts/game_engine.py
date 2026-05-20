@@ -123,20 +123,32 @@ def apply_move(state_json, coord, firing_player, current_offset=None):
             state["board_p1"], state["hits_p2"],
             state["ships_p1"], coord
         )
-    # Always update offset if provided
+
     if current_offset is not None:
         state["offset"] = int(current_offset)
+
     if result in ["INVALID", "ALREADY_FIRED"]:
         return json.dumps({"result": result, "sunk": None,
                            "state": json.dumps(state), "game_over": False})
+
     if firing_player == "P1":
         game_over = is_game_over(state["ships_p2"], state["hits_p1"])
-        state["turn"] = "P2" if not game_over else "DONE"
+        if game_over:
+            state["turn"] = "DONE"
+        elif result == "MISS":
+            state["turn"] = "P2"      # only switch on miss
+        # HIT or SUNK: turn stays "P1"
     else:
         game_over = is_game_over(state["ships_p1"], state["hits_p2"])
-        state["turn"] = "P1" if not game_over else "DONE"
+        if game_over:
+            state["turn"] = "DONE"
+        elif result == "MISS":
+            state["turn"] = "P1"      # only switch on miss
+        # HIT or SUNK: turn stays "P2"
+
     if game_over:
         state["status"] = "DONE"
+
     return json.dumps({
         "result": result,
         "sunk": sunk,
@@ -153,3 +165,17 @@ def get_board_view(state_json, player):
         enemy_view = render_board(state["board_p1"], state["hits_p2"], hide_ships=True)
         own_view   = render_board(state["board_p2"], state["hits_p1"], hide_ships=False)
     return json.dumps({"enemy_view": enemy_view, "own_view": own_view})
+    
+def get_dual_board_message(state_json, player):
+    state = json.loads(state_json)
+    if player == "P2":
+        own_board   = render_board(state["board_p2"], state["hits_p1"], hide_ships=False)
+        attack_view = render_board(state["board_p1"], state["hits_p2"], hide_ships=True)
+    else:
+        own_board   = render_board(state["board_p1"], state["hits_p2"], hide_ships=False)
+        attack_view = render_board(state["board_p2"], state["hits_p1"], hide_ships=True)
+    msg = (
+        "YOUR FLEET:\n" + own_board +
+        "\n\nYOUR ATTACKS:\n" + attack_view
+    )
+    return msg
