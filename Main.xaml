@@ -38,6 +38,7 @@
       <x:String>System.Runtime.Serialization</x:String>
       <x:String>System.Numerics</x:String>
       <x:String>System.Security</x:String>
+      <x:String>System.Net</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -102,9 +103,13 @@
       <AssemblyReference>System.Net.ServicePoint</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1048,3585" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1048,7408" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
-      <Variable x:TypeArguments="x:String" Name="strBotToken" />
+      <Variable x:TypeArguments="x:String" Name="strBotToken">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String">YOUR_BOT_TOKEN</Literal>
+        </Variable.Default>
+      </Variable>
       <Variable x:TypeArguments="x:String" Name="strChatIdP2">
         <Variable.Default>
           <Literal x:TypeArguments="x:String" Value="" />
@@ -132,20 +137,29 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Sequence DisplayName="Sequence" sap:VirtualizedContainerService.HintSize="592,3562" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <Sequence DisplayName="Sequence" sap:VirtualizedContainerService.HintSize="628,7385" sap2010:WorkflowViewState.IdRef="Sequence_2">
       <Sequence.Variables>
         <Variable x:TypeArguments="x:String" Name="strWinner" />
-        <Variable x:TypeArguments="ss:SecureString" Name="strBotTokenKey" />
+        <Variable x:TypeArguments="ss:SecureString" Name="strSecuredBotToken" />
       </Sequence.Variables>
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <Sequence DisplayName="Phase 1 – Handshake" sap:VirtualizedContainerService.HintSize="558,57" sap2010:WorkflowViewState.IdRef="Sequence_11">
+      <ui:GetSecret TimeoutMS="{x:Null}" AssetName="BattleshipTelegramAPI" DisplayName="Get Secret" FolderPath="nikpirat2@gmail.com's workspace" sap:VirtualizedContainerService.HintSize="594,176" sap2010:WorkflowViewState.IdRef="GetSecret_2" Secret="[strSecuredBotToken]" />
+      <Assign sap:VirtualizedContainerService.HintSize="594,175" sap2010:WorkflowViewState.IdRef="Assign_20">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[strBotToken]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[New System.Net.NetworkCredential(String.Empty, strSecuredBotToken).Password]</InArgument>
+        </Assign.Value>
+      </Assign>
+      <Sequence DisplayName="Phase 1 – Handshake" sap:VirtualizedContainerService.HintSize="594,3699" sap2010:WorkflowViewState.IdRef="Sequence_11">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
@@ -179,7 +193,7 @@
                   </Assign.Value>
                 </Assign>
                 <ui:LogMessage DisplayName="Step 2: tell Player 2 the bot is live" sap:VirtualizedContainerService.HintSize="524,175" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;Bot ready. Waiting for Player 2 to send /start&quot;]" />
-                <ui:InterruptibleWhile CurrentIndex="{x:Null}" Condition="[NOT bHandshakeDone AND intPollCount &lt; intMaxPolls]" DisplayName="While" sap:VirtualizedContainerService.HintSize="524,2267" sap2010:WorkflowViewState.IdRef="InterruptibleWhile_1">
+                <ui:InterruptibleWhile CurrentIndex="{x:Null}" DisplayName="While" sap:VirtualizedContainerService.HintSize="524,2267" sap2010:WorkflowViewState.IdRef="InterruptibleWhile_1">
                   <ui:InterruptibleWhile.Body>
                     <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="522,2145" sap2010:WorkflowViewState.IdRef="Sequence_4">
                       <Sequence.Variables>
@@ -297,6 +311,9 @@
                       </If>
                     </Sequence>
                   </ui:InterruptibleWhile.Body>
+                  <ui:InterruptibleWhile.Condition>
+                    <VisualBasicValue x:TypeArguments="x:Boolean" DisplayName="Visual basic value" ExpressionText="NOT bHandshakeDone AND intPollCount &lt; intMaxPolls" sap2010:WorkflowViewState.IdRef="VisualBasicValue`1_1" />
+                  </ui:InterruptibleWhile.Condition>
                 </ui:InterruptibleWhile>
               </Sequence>
             </ActivityAction>
@@ -337,7 +354,7 @@
         </If>
         <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="560,166" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Handshake result: &quot; + strChatIdP2]" />
       </Sequence>
-      <Sequence DisplayName="Phase 2 -Game Loop" sap:VirtualizedContainerService.HintSize="558,3422" sap2010:WorkflowViewState.IdRef="Sequence_12">
+      <Sequence DisplayName="Phase 2 -Game Loop" sap:VirtualizedContainerService.HintSize="594,3252" sap2010:WorkflowViewState.IdRef="Sequence_12">
         <Sequence.Variables>
           <Variable x:TypeArguments="x:String" Name="strP1BoardDisplay" />
           <Variable x:TypeArguments="x:Boolean" Name="bGameOver" />
@@ -359,9 +376,9 @@
             <InArgument x:TypeArguments="x:String" x:Key="in_BotToken">[strBotToken]</InArgument>
           </ui:InvokeWorkflowFile.Arguments>
         </ui:InvokeWorkflowFile>
-        <ui:InterruptibleWhile CurrentIndex="{x:Null}" DisplayName="While" sap:VirtualizedContainerService.HintSize="524,2413" sap2010:WorkflowViewState.IdRef="InterruptibleWhile_2">
+        <ui:InterruptibleWhile CurrentIndex="{x:Null}" DisplayName="While" sap:VirtualizedContainerService.HintSize="524,2243" sap2010:WorkflowViewState.IdRef="InterruptibleWhile_2">
           <ui:InterruptibleWhile.Body>
-            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="522,2282" sap2010:WorkflowViewState.IdRef="Sequence_13">
+            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="522,2112" sap2010:WorkflowViewState.IdRef="Sequence_13">
               <Sequence.Variables>
                 <Variable x:TypeArguments="x:String" Name="strMoveResult" />
                 <Variable x:TypeArguments="x:String" Name="strSunkShip" />
@@ -372,22 +389,28 @@
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Assign sap:VirtualizedContainerService.HintSize="488,175" sap2010:WorkflowViewState.IdRef="Assign_13">
-                <Assign.To>
-                  <OutArgument x:TypeArguments="njl:JObject">[jLoopState]</OutArgument>
-                </Assign.To>
-                <Assign.Value>
-                  <InArgument x:TypeArguments="njl:JObject">[JObject.Parse(strStateJson)]</InArgument>
-                </Assign.Value>
-              </Assign>
-              <Assign sap:VirtualizedContainerService.HintSize="488,175" sap2010:WorkflowViewState.IdRef="Assign_15">
-                <Assign.To>
-                  <OutArgument x:TypeArguments="x:String">[strCurrentTurn]</OutArgument>
-                </Assign.To>
-                <Assign.Value>
-                  <InArgument x:TypeArguments="x:String">[jLoopState("turn").ToString()]</InArgument>
-                </Assign.Value>
-              </Assign>
+              <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="488,180" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+                <ui:MultipleAssign.AssignOperations>
+                  <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+                    <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+                      <ui:AssignOperation.To>
+                        <OutArgument x:TypeArguments="njl:JObject">[jLoopState]</OutArgument>
+                      </ui:AssignOperation.To>
+                      <ui:AssignOperation.Value>
+                        <InArgument x:TypeArguments="njl:JObject">[JObject.Parse(strStateJson)]</InArgument>
+                      </ui:AssignOperation.Value>
+                    </ui:AssignOperation>
+                    <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_2">
+                      <ui:AssignOperation.To>
+                        <OutArgument x:TypeArguments="x:String">[strCurrentTurn]</OutArgument>
+                      </ui:AssignOperation.To>
+                      <ui:AssignOperation.Value>
+                        <InArgument x:TypeArguments="x:String">[jLoopState("turn").ToString()]</InArgument>
+                      </ui:AssignOperation.Value>
+                    </ui:AssignOperation>
+                  </scg:List>
+                </ui:MultipleAssign.AssignOperations>
+              </ui:MultipleAssign>
               <If Condition="[strCurrentTurn = &quot;P1&quot;]" sap:VirtualizedContainerService.HintSize="488,969" sap2010:WorkflowViewState.IdRef="If_6">
                 <If.Then>
                   <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="486,740" sap2010:WorkflowViewState.IdRef="Sequence_19">
@@ -458,6 +481,7 @@
                     </sap:WorkflowViewStateService.ViewState>
                     <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" DisplayName="TakeTurnP2 - Invoke Workflow File (Process\CoreLoop\TakeTurnP2.xaml)" sap:VirtualizedContainerService.HintSize="452,177" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Process\CoreLoop\TakeTurnP2.xaml">
                       <ui:InvokeWorkflowFile.Arguments>
+                        <OutArgument x:TypeArguments="x:String" x:Key="out_P1BoardDisplay">[strP1BoardDisplay]</OutArgument>
                         <InArgument x:TypeArguments="x:String" x:Key="in_BotToken">[strBotToken]</InArgument>
                         <InArgument x:TypeArguments="x:String" x:Key="in_HelperScriptPath">[strScriptHelperPath]</InArgument>
                         <OutArgument x:TypeArguments="x:String" x:Key="out_SunkShip">[strSunkShip]</OutArgument>

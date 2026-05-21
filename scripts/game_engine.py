@@ -244,7 +244,13 @@ def p2_take_turn(state_json, coord, current_offset):
     move = json.loads(apply_move(state_json, coord, "P2", current_offset))
     if move["result"] not in ("INVALID", "ALREADY_FIRED"):
         move["board_msg"] = get_dual_board_message(move["state"], "P2")
+        p1_views = json.loads(get_board_view(move["state"], "P1"))
+        move["p1_board_display"] = (
+            "=== YOUR FLEET ===\n" + p1_views["own_view"] +
+            "\n\n=== YOUR ATTACKS ===\n" + p1_views["enemy_view"]
+        )
     else:
         move["board_msg"] = ""
+        move["p1_board_display"] = state_json  # unused on invalid, safe fallback
     move["result_msg"] = result_message(move["result"], move.get("sunk") or "")
     return json.dumps(move)
