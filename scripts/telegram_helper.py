@@ -1,74 +1,89 @@
 import requests
 import json
 
-BOT_TOKEN = ""
-BASE_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
+BASE_URL_TEMPLATE = "https://api.telegram.org/bot{token}"
 
-def send_message(chat_id, text):
-    url = f"{BASE_URL}/sendMessage"
-    payload = {"chat_id": chat_id, "text": text}
-    r = requests.post(url, json=payload)
+
+def _base_url(bot_token):
+    return BASE_URL_TEMPLATE.format(token=bot_token)
+
+
+def send_message(bot_token, chat_id, text):
+    """Send a text message to `chat_id`."""
+    url = f"{_base_url(bot_token)}/sendMessage"
+    r = requests.post(url, json={"chat_id": chat_id, "text": text})
+										
     return str(r.status_code)
 
-def get_latest_message(offset):
-    url = f"{BASE_URL}/getUpdates"
-    payload = {"offset": int(offset), "timeout": 5, "limit": 1}
-    r = requests.post(url, json=payload)
+
+def get_latest_message(bot_token, offset):
+    """
+    Poll for one update at `offset`.
+    Returns JSON: { found, update_id, chat_id, text }
+    """
+    url = f"{_base_url(bot_token)}/getUpdates"
+    r = requests.post(url, json={"offset": int(offset), "timeout": 5, "limit": 1})
+										
     data = r.json()
     if data.get("result"):
         item = data["result"][0]
-        update_id = item["update_id"]
-        chat_id   = str(item["message"]["chat"]["id"])
-        text      = item["message"].get("text", "").strip().upper()
+									 
+													  
+																   
         return json.dumps({
-            "update_id": update_id,
-            "chat_id":   chat_id,
-            "text":      text,
-            "found":     True
+            "found":     True,
+            "update_id": item["update_id"],
+            "chat_id":   str(item["message"]["chat"]["id"]),
+            "text":      item["message"].get("text", "").strip().upper(),
+							 
         })
-    return json.dumps({
-        "found":     False,
-        "update_id": int(offset)
-    })
+					   
+						   
+    return json.dumps({"found": False, "update_id": int(offset)})
+	  
 
-def wait_for_start(offset):
+
+def wait_for_start(bot_token, offset):
     """
-    Reads one pending update.
-    Returns matched=True if the message text is /START or READY.
-    Always returns the latest update_id so caller can advance offset.
-    Does NOT require knowing chat_id in advance.
+    Poll once and check whether the incoming message is a /start or READY.
+    Returns JSON: { found, matched, update_id, chat_id, text }
+																	 
+												
     """
-    url = f"{BASE_URL}/getUpdates"
-    payload = {"offset": int(offset), "timeout": 5, "limit": 1}
-    r = requests.post(url, json=payload)
+    url = f"{_base_url(bot_token)}/getUpdates"
+    r = requests.post(url, json={"offset": int(offset), "timeout": 5, "limit": 1})
+										
     data = r.json()
     if data.get("result"):
-        item      = data["result"][0]
-        update_id = item["update_id"]
-        chat_id   = str(item["message"]["chat"]["id"])
-        text      = item["message"].get("text", "").strip().upper()
-        matched   = text in ["/START", "READY", "START"]
+        item    = data["result"][0]
+									 
+													  
+        text    = item["message"].get("text", "").strip().upper()
+        matched = text in ("/START", "READY", "START")
         return json.dumps({
-            "update_id": update_id,
-            "chat_id":   chat_id,
-            "text":      text,
+            "found":     True,
+								 
+							  
             "matched":   matched,
-            "found":     True
+            "update_id": item["update_id"],
+            "chat_id":   str(item["message"]["chat"]["id"]),
+            "text":      text,
         })
     return json.dumps({
         "found":     False,
         "matched":   False,
-        "update_id": int(offset)
+        "update_id": int(offset),
     })
 
-def clear_pending_updates():
+
+def clear_pending_updates(bot_token):
     """
-    Call once at startup to flush any old messages sitting in the queue.
-    Gets the latest offset so stale /start messages are ignored.
+    Flush stale messages at startup.
+    Returns the next offset to use as a string (UiPath converts via CInt).
     """
-    url = f"{BASE_URL}/getUpdates"
-    payload = {"offset": -1, "limit": 1}
-    r = requests.post(url, json=payload)
+    url = f"{_base_url(bot_token)}/getUpdates"
+    r = requests.post(url, json={"offset": -1, "limit": 1})
+										
     data = r.json()
     if data.get("result"):
         return str(data["result"][-1]["update_id"] + 1)

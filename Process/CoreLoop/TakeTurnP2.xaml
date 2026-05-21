@@ -1,5 +1,6 @@
 <Activity mc:Ignorable="sap sap2010" x:Class="TakeTurnP2" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:p="http://schemas.uipath.com/workflow/activities/python" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
+    <x:Property Name="in_BotToken" Type="InArgument(x:String)" />
     <x:Property Name="in_HelperScriptPath" Type="InArgument(x:String)" />
     <x:Property Name="out_SunkShip" Type="OutArgument(x:String)" />
     <x:Property Name="out_Result" Type="OutArgument(x:String)" />
@@ -109,7 +110,7 @@
       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
     </scg:Dictionary>
   </sap:WorkflowViewStateService.ViewState>
-  <Sequence DisplayName="TakeTurnP2" sap:VirtualizedContainerService.HintSize="1048,10274" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="TakeTurnP2" sap:VirtualizedContainerService.HintSize="1048,5581" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="njl:JObject" Name="jStateObj" />
       <Variable x:TypeArguments="x:String" Name="strResultMsg" />
@@ -131,37 +132,43 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Sequence sap:VirtualizedContainerService.HintSize="594,10251" sap2010:WorkflowViewState.IdRef="Sequence_3">
+    <Sequence sap:VirtualizedContainerService.HintSize="594,5558" sap2010:WorkflowViewState.IdRef="Sequence_3">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <Assign sap:VirtualizedContainerService.HintSize="560,175" sap2010:WorkflowViewState.IdRef="Assign_1">
-        <Assign.To>
-          <OutArgument x:TypeArguments="njl:JObject">[jStateObj]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="njl:JObject">[JObject.Parse(in_StateJson)]</InArgument>
-        </Assign.Value>
-      </Assign>
-      <Assign sap:VirtualizedContainerService.HintSize="560,175" sap2010:WorkflowViewState.IdRef="Assign_2">
-        <Assign.To>
-          <OutArgument x:TypeArguments="x:Int32">[intOffset]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="x:Int32">[CInt(jStateObj("offset"))]</InArgument>
-        </Assign.Value>
-      </Assign>
-      <Assign sap:VirtualizedContainerService.HintSize="560,175" sap2010:WorkflowViewState.IdRef="Assign_16">
-        <Assign.To>
-          <OutArgument x:TypeArguments="njl:JObject">[jMoveResult]</OutArgument>
-        </Assign.To>
-        <Assign.Value>
-          <InArgument x:TypeArguments="njl:JObject">[JObject.Parse("{""result"":""NONE"",""sunk"":null,""state"":"""",""game_over"":false}")]</InArgument>
-        </Assign.Value>
-      </Assign>
-      <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="560,1406" sap2010:WorkflowViewState.IdRef="PythonScope_1" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
+      <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="560,211" sap2010:WorkflowViewState.IdRef="MultipleAssign_2">
+        <ui:MultipleAssign.AssignOperations>
+          <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+            <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_5">
+              <ui:AssignOperation.To>
+                <OutArgument x:TypeArguments="njl:JObject">[jStateObj]</OutArgument>
+              </ui:AssignOperation.To>
+              <ui:AssignOperation.Value>
+                <InArgument x:TypeArguments="njl:JObject">[JObject.Parse(in_StateJson)]</InArgument>
+              </ui:AssignOperation.Value>
+            </ui:AssignOperation>
+            <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_6">
+              <ui:AssignOperation.To>
+                <OutArgument x:TypeArguments="x:Int32">[intOffset]</OutArgument>
+              </ui:AssignOperation.To>
+              <ui:AssignOperation.Value>
+                <InArgument x:TypeArguments="x:Int32">[CInt(jStateObj("offset"))]</InArgument>
+              </ui:AssignOperation.Value>
+            </ui:AssignOperation>
+            <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_7">
+              <ui:AssignOperation.To>
+                <OutArgument x:TypeArguments="njl:JObject">[jMoveResult]</OutArgument>
+              </ui:AssignOperation.To>
+              <ui:AssignOperation.Value>
+                <InArgument x:TypeArguments="njl:JObject">[JObject.Parse("{""result"":""NONE"",""sunk"":null,""state"":"""",""game_over"":false}")]</InArgument>
+              </ui:AssignOperation.Value>
+            </ui:AssignOperation>
+          </scg:List>
+        </ui:MultipleAssign.AssignOperations>
+      </ui:MultipleAssign>
+      <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="560,57" sap2010:WorkflowViewState.IdRef="PythonScope_1" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
         <p:PythonScope.Body>
           <ActivityAction x:TypeArguments="x:Object">
             <ActivityAction.Argument>
@@ -192,21 +199,21 @@
                   <InArgument x:TypeArguments="x:String">[objPythonGetBoardViewResult.ToString()]</InArgument>
                 </Assign.Value>
               </Assign>
-              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, strViewsResult}]" />
-              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_13" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;Your turn! Enter a coordinate (e.g. B5):&quot;}]" />
+              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2, strViewsResult}]" />
+              <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_13" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2, &quot;Your turn! Enter a coordinate (e.g. B5):&quot;}]" />
             </Sequence>
           </ActivityAction>
         </p:PythonScope.Body>
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </p:PythonScope>
-      <ui:InterruptibleWhile CurrentIndex="{x:Null}" DisplayName="While" sap:VirtualizedContainerService.HintSize="560,4425" sap2010:WorkflowViewState.IdRef="InterruptibleWhile_1">
+      <ui:InterruptibleWhile CurrentIndex="{x:Null}" DisplayName="While" sap:VirtualizedContainerService.HintSize="560,3856" sap2010:WorkflowViewState.IdRef="InterruptibleWhile_1">
         <ui:InterruptibleWhile.Body>
-          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="558,4294" sap2010:WorkflowViewState.IdRef="Sequence_5">
+          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="558,3725" sap2010:WorkflowViewState.IdRef="Sequence_5">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -238,7 +245,7 @@
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                     <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="LoadScript_4" Result="[pyLoadedHelperScript]" ScriptFile="[in_HelperScriptPath]" />
-                    <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" Instance="[pyLoadedHelperScript]" Name="get_latest_message" Parameters="[New Object() {intOffset}]" Result="[pyRawMsg]" />
+                    <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" Instance="[pyLoadedHelperScript]" Name="get_latest_message" Parameters="[New Object() {in_BotToken, intOffset}]" Result="[pyRawMsg]" />
                     <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="GetObject`1_1" PythonObject="[pyRawMsg]" Result="[objPyRawMsgResult]" />
                     <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_4">
                       <Assign.To>
@@ -266,7 +273,7 @@
                 <InArgument x:TypeArguments="x:Int32">[CInt(jMsg("update_id")) + 1]</InArgument>
               </Assign.Value>
             </Assign>
-            <If Condition="[CBool(jMsg(&quot;found&quot;)) = True]" sap:VirtualizedContainerService.HintSize="524,2421" sap2010:WorkflowViewState.IdRef="If_1">
+            <If Condition="[CBool(jMsg(&quot;found&quot;)) = True]" sap:VirtualizedContainerService.HintSize="524,2382" sap2010:WorkflowViewState.IdRef="If_1">
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -274,7 +281,7 @@
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
               <If.Then>
-                <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="522,2192" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="522,2078" sap2010:WorkflowViewState.IdRef="Sequence_7">
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -288,16 +295,16 @@
                       <InArgument x:TypeArguments="x:String">[jMsg("text").ToString()]</InArgument>
                     </Assign.Value>
                   </Assign>
-                  <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="488,1957" sap2010:WorkflowViewState.IdRef="PythonScope_3" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
+                  <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="488,1843" sap2010:WorkflowViewState.IdRef="PythonScope_3" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
                     <p:PythonScope.Body>
                       <ActivityAction x:TypeArguments="x:Object">
                         <ActivityAction.Argument>
                           <DelegateInArgument x:TypeArguments="x:Object" Name="PythonEngineSessionProperty" />
                         </ActivityAction.Argument>
-                        <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="486,1732" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                        <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="486,1618" sap2010:WorkflowViewState.IdRef="Sequence_8">
                           <Sequence.Variables>
-                            <Variable x:TypeArguments="p:PythonObject" Name="pyApplyMoveResult" />
-                            <Variable x:TypeArguments="x:Object" Name="objPyApplyMoveResult" />
+                            <Variable x:TypeArguments="p:PythonObject" Name="pyP2TakeTurnResult" />
+                            <Variable x:TypeArguments="x:Object" Name="objPyP2TakeTurnResult" />
                             <Variable x:TypeArguments="p:PythonObject" Name="pyLoadedGameEngineScript" />
                             <Variable x:TypeArguments="p:PythonObject" Name="pyLoadedHelperScript" />
                           </Sequence.Variables>
@@ -308,20 +315,20 @@
                           </sap:WorkflowViewStateService.ViewState>
                           <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="452,227" sap2010:WorkflowViewState.IdRef="LoadScript_3" Result="[pyLoadedGameEngineScript]" ScriptFile="[in_GameEngineScriptPath]" />
                           <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="452,227" sap2010:WorkflowViewState.IdRef="LoadScript_8" Result="[pyLoadedHelperScript]" ScriptFile="[in_HelperScriptPath]" />
-                          <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="452,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" Instance="[pyLoadedGameEngineScript]" Name="apply_move" Parameters="[New Object() {in_StateJson, strCoord.Trim().ToUpper(), &quot;P2&quot;, intOffset}]" Result="[pyApplyMoveResult]" />
-                          <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="452,123" sap2010:WorkflowViewState.IdRef="GetObject`1_2" PythonObject="[pyApplyMoveResult]" Result="[objPyApplyMoveResult]" />
+                          <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="452,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" Instance="[pyLoadedGameEngineScript]" Name="p2_take_turn" Parameters="[New Object() {in_StateJson, strCoord.Trim().ToUpper(), intOffset}]" Result="[pyP2TakeTurnResult]" />
+                          <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="452,123" sap2010:WorkflowViewState.IdRef="GetObject`1_2" PythonObject="[pyP2TakeTurnResult]" Result="[objPyP2TakeTurnResult]" />
                           <Assign sap:VirtualizedContainerService.HintSize="452,175" sap2010:WorkflowViewState.IdRef="Assign_7">
                             <Assign.To>
                               <OutArgument x:TypeArguments="njl:JObject">[jMoveResult]</OutArgument>
                             </Assign.To>
                             <Assign.Value>
-                              <InArgument x:TypeArguments="njl:JObject">[Newtonsoft.Json.Linq.JObject.Parse(objPyApplyMoveResult.ToString())]</InArgument>
+                              <InArgument x:TypeArguments="njl:JObject">[Newtonsoft.Json.Linq.JObject.Parse(objPyP2TakeTurnResult.ToString())]</InArgument>
                             </Assign.Value>
                           </Assign>
-                          <If Condition="[jMoveResult(&quot;result&quot;).ToString() = &quot;INVALID&quot;]" sap:VirtualizedContainerService.HintSize="452,403" sap2010:WorkflowViewState.IdRef="If_2">
+                          <If Condition="[jMoveResult(&quot;result&quot;).ToString() = &quot;INVALID&quot;]" sap:VirtualizedContainerService.HintSize="452,57" sap2010:WorkflowViewState.IdRef="If_2">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
                                 <x:Boolean x:Key="IsPinned">False</x:Boolean>
                               </scg:Dictionary>
                             </sap:WorkflowViewStateService.ViewState>
@@ -332,7 +339,7 @@
                                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                   </scg:Dictionary>
                                 </sap:WorkflowViewStateService.ViewState>
-                                <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_9" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;Invalid coordinate. Try again (e.g. B5 or J10).&quot;}]" />
+                                <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_9" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2, &quot;Invalid coordinate. Try again (e.g. B5 or J10).&quot;}]" />
                               </Sequence>
                             </If.Then>
                             <If.Else>
@@ -345,10 +352,10 @@
                               </Sequence>
                             </If.Else>
                           </If>
-                          <If Condition="[jMoveResult(&quot;result&quot;).ToString() = &quot;ALREADY_FIRED&quot;]" sap:VirtualizedContainerService.HintSize="452,394" sap2010:WorkflowViewState.IdRef="If_3">
+                          <If Condition="[jMoveResult(&quot;result&quot;).ToString() = &quot;ALREADY_FIRED&quot;]" sap:VirtualizedContainerService.HintSize="452,57" sap2010:WorkflowViewState.IdRef="If_3">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
                                 <x:Boolean x:Key="IsPinned">False</x:Boolean>
                               </scg:Dictionary>
                             </sap:WorkflowViewStateService.ViewState>
@@ -359,11 +366,46 @@
                                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                   </scg:Dictionary>
                                 </sap:WorkflowViewStateService.ViewState>
-                                <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_10" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;You already fired at that cell. Pick another.&quot;}]" />
+                                <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_10" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2, &quot;You already fired at that cell. Pick another.&quot;}]" />
                               </Sequence>
                             </If.Then>
                             <If.Else>
                               <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,90" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </Sequence>
+                            </If.Else>
+                          </If>
+                          <If Condition="[jMoveResult(&quot;result&quot;).ToString() &lt;&gt; &quot;INVALID&quot; And jMoveResult(&quot;result&quot;).ToString() &lt;&gt; &quot;ALREADY_FIRED&quot;]" sap:VirtualizedContainerService.HintSize="452,569" sap2010:WorkflowViewState.IdRef="If_4">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <If.Then>
+                              <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,349" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_8">
+                                  <Assign.To>
+                                    <OutArgument x:TypeArguments="x:Boolean">[bValidMove]</OutArgument>
+                                  </Assign.To>
+                                  <Assign.Value>
+                                    <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+                                  </Assign.Value>
+                                </Assign>
+                                <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_15" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2,  jMoveResult(&quot;result_msg&quot;).ToString()}]" />
+                              </Sequence>
+                            </If.Then>
+                            <If.Else>
+                              <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,90" sap2010:WorkflowViewState.IdRef="Sequence_15">
                                 <sap:WorkflowViewStateService.ViewState>
                                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -385,47 +427,13 @@
                 </Sequence>
               </If.Then>
               <If.Else>
-                <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="522,90" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="522,174" sap2010:WorkflowViewState.IdRef="Sequence_9">
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
-                </Sequence>
-              </If.Else>
-            </If>
-            <If Condition="[jMoveResult(&quot;result&quot;).ToString() &lt;&gt; &quot;INVALID&quot; And jMoveResult(&quot;result&quot;).ToString() &lt;&gt; &quot;ALREADY_FIRED&quot;]" sap:VirtualizedContainerService.HintSize="524,530" sap2010:WorkflowViewState.IdRef="If_4">
-              <sap:WorkflowViewStateService.ViewState>
-                <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                </scg:Dictionary>
-              </sap:WorkflowViewStateService.ViewState>
-              <If.Then>
-                <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,226" sap2010:WorkflowViewState.IdRef="Sequence_14">
-                  <sap:WorkflowViewStateService.ViewState>
-                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                    </scg:Dictionary>
-                  </sap:WorkflowViewStateService.ViewState>
-                  <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_8">
-                    <Assign.To>
-                      <OutArgument x:TypeArguments="x:Boolean">[bValidMove]</OutArgument>
-                    </Assign.To>
-                    <Assign.Value>
-                      <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
-                    </Assign.Value>
-                  </Assign>
-                </Sequence>
-              </If.Then>
-              <If.Else>
-                <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,174" sap2010:WorkflowViewState.IdRef="Sequence_15">
-                  <sap:WorkflowViewStateService.ViewState>
-                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                    </scg:Dictionary>
-                  </sap:WorkflowViewStateService.ViewState>
-                  <Delay Duration="00:00:10" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="Delay_1" />
+                  <Delay Duration="00:00:10" sap:VirtualizedContainerService.HintSize="488,114" sap2010:WorkflowViewState.IdRef="Delay_1" />
                 </Sequence>
               </If.Else>
             </If>
@@ -441,7 +449,7 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </ui:InterruptibleWhile>
-      <If Condition="[NOT bValidMove]" sap:VirtualizedContainerService.HintSize="560,3812" sap2010:WorkflowViewState.IdRef="If_5">
+      <If Condition="[NOT bValidMove]" sap:VirtualizedContainerService.HintSize="560,1351" sap2010:WorkflowViewState.IdRef="If_5">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -449,19 +457,19 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
         <If.Then>
-          <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="512,1036" sap2010:WorkflowViewState.IdRef="Sequence_16">
+          <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="548,928" sap2010:WorkflowViewState.IdRef="Sequence_16">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="478,976" sap2010:WorkflowViewState.IdRef="PythonScope_4" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
+            <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="514,868" sap2010:WorkflowViewState.IdRef="PythonScope_4" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
               <p:PythonScope.Body>
                 <ActivityAction x:TypeArguments="x:Object">
                   <ActivityAction.Argument>
                     <DelegateInArgument x:TypeArguments="x:Object" Name="PythonEngineSessionProperty" />
                   </ActivityAction.Argument>
-                  <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,751" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                  <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="512,643" sap2010:WorkflowViewState.IdRef="Sequence_17">
                     <Sequence.Variables>
                       <Variable x:TypeArguments="p:PythonObject" Name="pyLoadedHelperScript" />
                     </Sequence.Variables>
@@ -470,24 +478,48 @@
                         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
-                    <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="LoadScript_5" Result="[pyLoadedHelperScript]" ScriptFile="[in_HelperScriptPath]" />
-                    <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_4" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;Turn timed out. Player 1 wins by default.&quot;}]" />
-                    <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_9">
-                      <Assign.To>
-                        <OutArgument x:TypeArguments="x:Boolean">[out_GameOver]</OutArgument>
-                      </Assign.To>
-                      <Assign.Value>
-                        <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
-                      </Assign.Value>
-                    </Assign>
-                    <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_10">
-                      <Assign.To>
-                        <OutArgument x:TypeArguments="x:String">[out_StateJson]</OutArgument>
-                      </Assign.To>
-                      <Assign.Value>
-                        <InArgument x:TypeArguments="x:String">[in_StateJson]</InArgument>
-                      </Assign.Value>
-                    </Assign>
+                    <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="478,227" sap2010:WorkflowViewState.IdRef="LoadScript_5" Result="[pyLoadedHelperScript]" ScriptFile="[in_HelperScriptPath]" />
+                    <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="478,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_4" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2, &quot;Turn timed out. Player 1 wins by default.&quot;}]" />
+                    <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="478,233" sap2010:WorkflowViewState.IdRef="MultipleAssign_3">
+                      <ui:MultipleAssign.AssignOperations>
+                        <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+                          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_8">
+                            <ui:AssignOperation.To>
+                              <OutArgument x:TypeArguments="x:Boolean">[out_GameOver]</OutArgument>
+                            </ui:AssignOperation.To>
+                            <ui:AssignOperation.Value>
+                              <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+                            </ui:AssignOperation.Value>
+                          </ui:AssignOperation>
+                          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_9">
+                            <ui:AssignOperation.To>
+                              <OutArgument x:TypeArguments="x:String">[out_StateJson]</OutArgument>
+                            </ui:AssignOperation.To>
+                            <ui:AssignOperation.Value>
+                              <InArgument x:TypeArguments="x:String">[in_StateJson]</InArgument>
+                            </ui:AssignOperation.Value>
+                          </ui:AssignOperation>
+                          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_10">
+                            <ui:AssignOperation.To>
+                              <OutArgument x:TypeArguments="x:String">[out_Result]</OutArgument>
+                            </ui:AssignOperation.To>
+                            <ui:AssignOperation.Value>
+                              <InArgument x:TypeArguments="x:String">TIMEOUT</InArgument>
+                            </ui:AssignOperation.Value>
+                          </ui:AssignOperation>
+                          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_11">
+                            <ui:AssignOperation.To>
+                              <OutArgument x:TypeArguments="x:String">[out_SunkShip]</OutArgument>
+                            </ui:AssignOperation.To>
+                            <ui:AssignOperation.Value>
+                              <InArgument x:TypeArguments="x:String">
+                                <Literal x:TypeArguments="x:String" Value="" />
+                              </InArgument>
+                            </ui:AssignOperation.Value>
+                          </ui:AssignOperation>
+                        </scg:List>
+                      </ui:MultipleAssign.AssignOperations>
+                    </ui:MultipleAssign>
                   </Sequence>
                 </ActivityAction>
               </p:PythonScope.Body>
@@ -495,13 +527,13 @@
           </Sequence>
         </If.Then>
         <If.Else>
-          <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="512,2646" sap2010:WorkflowViewState.IdRef="Sequence_18">
+          <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="548,293" sap2010:WorkflowViewState.IdRef="Sequence_18">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="478,242" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+            <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="514,233" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
               <ui:MultipleAssign.AssignOperations>
                 <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
                   <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
@@ -544,105 +576,6 @@
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
             </ui:MultipleAssign>
-            <Switch x:TypeArguments="x:String" DisplayName="Switch" Expression="[out_Result]" sap:VirtualizedContainerService.HintSize="478,947" sap2010:WorkflowViewState.IdRef="Switch`1_1">
-              <Switch.Default>
-                <Sequence DisplayName="Default" sap:VirtualizedContainerService.HintSize="450,90" sap2010:WorkflowViewState.IdRef="Sequence_23">
-                  <sap:WorkflowViewStateService.ViewState>
-                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                    </scg:Dictionary>
-                  </sap:WorkflowViewStateService.ViewState>
-                </Sequence>
-              </Switch.Default>
-              <sap:WorkflowViewStateService.ViewState>
-                <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                </scg:Dictionary>
-              </sap:WorkflowViewStateService.ViewState>
-              <Sequence x:Key="HIT" DisplayName="&quot;HIT&quot;" sap:VirtualizedContainerService.HintSize="450,226" sap2010:WorkflowViewState.IdRef="Sequence_20">
-                <sap:WorkflowViewStateService.ViewState>
-                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                  </scg:Dictionary>
-                </sap:WorkflowViewStateService.ViewState>
-                <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_11">
-                  <Assign.To>
-                    <OutArgument x:TypeArguments="x:String">[strResultMsg]</OutArgument>
-                  </Assign.To>
-                  <Assign.Value>
-                    <InArgument x:TypeArguments="x:String">["HIT! Well done."]</InArgument>
-                  </Assign.Value>
-                </Assign>
-              </Sequence>
-              <Sequence x:Key="MISS" DisplayName="&quot;MISS&quot;" sap:VirtualizedContainerService.HintSize="450,226" sap2010:WorkflowViewState.IdRef="Sequence_21">
-                <sap:WorkflowViewStateService.ViewState>
-                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                  </scg:Dictionary>
-                </sap:WorkflowViewStateService.ViewState>
-                <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_12">
-                  <Assign.To>
-                    <OutArgument x:TypeArguments="x:String">[strResultMsg]</OutArgument>
-                  </Assign.To>
-                  <Assign.Value>
-                    <InArgument x:TypeArguments="x:String">["Miss. Player 2's turn."]</InArgument>
-                  </Assign.Value>
-                </Assign>
-              </Sequence>
-              <Sequence x:Key="SUNK" DisplayName="&quot;SUNK&quot;" sap:VirtualizedContainerService.HintSize="450,226" sap2010:WorkflowViewState.IdRef="Sequence_22">
-                <sap:WorkflowViewStateService.ViewState>
-                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                  </scg:Dictionary>
-                </sap:WorkflowViewStateService.ViewState>
-                <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_13">
-                  <Assign.To>
-                    <OutArgument x:TypeArguments="x:String">[strResultMsg]</OutArgument>
-                  </Assign.To>
-                  <Assign.Value>
-                    <InArgument x:TypeArguments="x:String">["You sunk the " + out_SunkShip + "!"]</InArgument>
-                  </Assign.Value>
-                </Assign>
-              </Sequence>
-            </Switch>
-            <p:PythonScope OperationTimeout="{x:Null}" DisplayName="Python Scope" sap:VirtualizedContainerService.HintSize="478,1397" sap2010:WorkflowViewState.IdRef="PythonScope_5" LibraryPath="C:\Users\user\AppData\Local\Programs\Python\Python311\python311.dll" Path="C:\Users\user\AppData\Local\Programs\Python\Python311">
-              <p:PythonScope.Body>
-                <ActivityAction x:TypeArguments="x:Object">
-                  <ActivityAction.Argument>
-                    <DelegateInArgument x:TypeArguments="x:Object" Name="PythonEngineSessionProperty" />
-                  </ActivityAction.Argument>
-                  <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,1172" sap2010:WorkflowViewState.IdRef="Sequence_19">
-                    <Sequence.Variables>
-                      <Variable x:TypeArguments="p:PythonObject" Name="pyLoadedGameEngineScript" />
-                      <Variable x:TypeArguments="p:PythonObject" Name="pyBoardViews" />
-                      <Variable x:TypeArguments="x:Object" Name="objPythonGetBoardViewResult" />
-                      <Variable x:TypeArguments="p:PythonObject" Name="pyLoadedHelperScript" />
-                      <Variable x:TypeArguments="x:String" Name="strViewsResult" />
-                    </Sequence.Variables>
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="LoadScript_6" Result="[pyLoadedHelperScript]" ScriptFile="[in_HelperScriptPath]" />
-                    <p:LoadScript Code="{x:Null}" DisplayName="Load Python Script" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="LoadScript_7" Result="[pyLoadedGameEngineScript]" ScriptFile="[in_GameEngineScriptPath]" />
-                    <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_8" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, strResultMsg}]" />
-                    <p:InvokeMethod DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_6" Instance="[pyLoadedGameEngineScript]" Name="get_dual_board_message" Parameters="[New Object() {in_StateJson, &quot;P2&quot;}]" Result="[pyBoardViews]" />
-                    <p:GetObject x:TypeArguments="x:Object" DisplayName="Get Python Object" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="GetObject`1_3" PythonObject="[pyBoardViews]" Result="[objPythonGetBoardViewResult]" />
-                    <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_14">
-                      <Assign.To>
-                        <OutArgument x:TypeArguments="x:String">[strViewsResult]</OutArgument>
-                      </Assign.To>
-                      <Assign.Value>
-                        <InArgument x:TypeArguments="x:String">[objPythonGetBoardViewResult.ToString()]</InArgument>
-                      </Assign.Value>
-                    </Assign>
-                    <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,114" sap2010:WorkflowViewState.IdRef="InvokeMethod_14" Instance="[pyLoadedHelperScript]" Name="send_message" Parameters="[New Object() {in_ChatIdP2, &quot;Boards:&quot; + Environment.NewLine + strViewsResult}]" />
-                  </Sequence>
-                </ActivityAction>
-              </p:PythonScope.Body>
-            </p:PythonScope>
           </Sequence>
         </If.Else>
       </If>

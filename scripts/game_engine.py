@@ -12,14 +12,18 @@ SHIPS = [
 ROWS = list("ABCDEFGHIJ")
 COLS = list(range(1, 11))
 
+
+# ── Board helpers ────────────────────────────────────────────────────────────
+
 def empty_board():
     return {r: {str(c): "." for c in COLS} for r in ROWS}
+
 
 def place_ships_random(board):
     ship_positions = {}
     for ship in SHIPS:
-        placed = False
-        attempts = 0
+        placed, attempts = False, 0
+					
         while not placed and attempts < 200:
             attempts += 1
             orientation = random.choice(["H", "V"])
@@ -38,46 +42,15 @@ def place_ships_random(board):
                 placed = True
     return board, ship_positions
 
+
 def parse_coordinate(coord):
     coord = coord.strip().upper()
     if len(coord) < 2 or len(coord) > 3:
         return None, None
-    row = coord[0]
-    col = coord[1:]
-    if row not in ROWS:
-        return None, None
-    if not col.isdigit() or int(col) < 1 or int(col) > 10:
+    row, col = coord[0], coord[1:]
+    if row not in ROWS or not col.isdigit() or not (1 <= int(col) <= 10):
         return None, None
     return row, col
-
-def fire(board, hit_overlay, ship_positions, coord):
-    row, col = parse_coordinate(coord)
-    if row is None:
-        return "INVALID", None
-    if hit_overlay[row][col] in ["X", "O"]:
-        return "ALREADY_FIRED", None
-    if board[row][col] == "S":
-        hit_overlay[row][col] = "X"
-        sunk_ship = check_sunk(board, hit_overlay, ship_positions, row, col)
-        if sunk_ship:
-            return "SUNK", sunk_ship
-        return "HIT", None
-    else:
-        hit_overlay[row][col] = "O"
-        return "MISS", None
-
-def check_sunk(board, hit_overlay, ship_positions, hit_row, hit_col):
-    for ship_name, cells in ship_positions.items():
-        if (hit_row, hit_col) in cells:
-            if all(hit_overlay[r][c] == "X" for r, c in cells):
-                return ship_name
-    return None
-
-def is_game_over(ship_positions, hit_overlay):
-    for ship_name, cells in ship_positions.items():
-        if not all(hit_overlay[r][c] == "X" for r, c in cells):
-            return False
-    return True
 
 def render_board(board, hit_overlay, hide_ships=True):
     lines = ["  " + " ".join(str(c) for c in COLS)]
@@ -94,7 +67,43 @@ def render_board(board, hit_overlay, hide_ships=True):
         lines.append(row + " " + " ".join(cells))
     return "\n".join(lines)
 
+
+# ── Game logic ───────────────────────────────────────────────────────────────
+
+def check_sunk(hit_overlay, ship_positions, hit_row, hit_col):
+    for ship_name, cells in ship_positions.items():
+        if (hit_row, hit_col) in cells:
+            if all(hit_overlay[r][c] == "X" for r, c in cells):
+                return ship_name
+    return None
+
+
+def is_game_over(ship_positions, hit_overlay):
+    return all(
+        hit_overlay[r][c] == "X"
+        for cells in ship_positions.values()
+        for r, c in cells
+    )
+
+
+def fire(board, hit_overlay, ship_positions, coord):
+    row, col = parse_coordinate(coord)
+    if row is None:
+        return "INVALID", None
+    if hit_overlay[row][col] in ["X", "O"]:
+        return "ALREADY_FIRED", None
+    if board[row][col] == "S":
+        hit_overlay[row][col] = "X"
+        return "SUNK" if check_sunk(hit_overlay, ship_positions, row, col) else "HIT", \
+               check_sunk(hit_overlay, ship_positions, row, col)
+    hit_overlay[row][col] = "O"
+    return "MISS", None
+
+
+# ── Public API (called from UiPath) ─────────────────────────────────────────
+
 def new_game_state(chat_id_p2, offset=0):
+    """Create a fresh game state with randomly placed ships for both players."""
     board_p1, ships_p1 = place_ships_random(empty_board())
     board_p2, ships_p2 = place_ships_random(empty_board())
     state = {
@@ -105,29 +114,36 @@ def new_game_state(chat_id_p2, offset=0):
         "board_p2": board_p2,
         "ships_p1": ships_p1,
         "ships_p2": ships_p2,
-        "hits_p1": empty_board(),
-        "hits_p2": empty_board(),
-        "offset": int(offset)
+        "hits_p1": empty_board(),   # shots fired BY P1 (land on P2's board)
+        "hits_p2": empty_board(),   # shots fired BY P2 (land on P1's board)
+        "offset": int(offset),
     }
     return json.dumps(state)
 
+
 def apply_move(state_json, coord, firing_player, current_offset=None):
+    """
+    Apply a shot by `firing_player` at `coord`.
+    Returns JSON: { result, sunk, state, game_over }
+    result: HIT | MISS | SUNK | INVALID | ALREADY_FIRED
+    """
     state = json.loads(state_json)
+
     if firing_player == "P1":
-        result, sunk = fire(
-            state["board_p2"], state["hits_p1"],
-            state["ships_p2"], coord
-        )
+							
+        result, sunk = fire(state["board_p2"], state["hits_p1"], state["ships_p2"], coord)
+									
+		 
     else:
-        result, sunk = fire(
-            state["board_p1"], state["hits_p2"],
-            state["ships_p1"], coord
-        )
+							
+        result, sunk = fire(state["board_p1"], state["hits_p2"], state["ships_p1"], coord)
+									
+		 
 
     if current_offset is not None:
         state["offset"] = int(current_offset)
 
-    if result in ["INVALID", "ALREADY_FIRED"]:
+    if result in ("INVALID", "ALREADY_FIRED"):
         return json.dumps({"result": result, "sunk": None,
                            "state": json.dumps(state), "game_over": False})
 
@@ -136,46 +152,99 @@ def apply_move(state_json, coord, firing_player, current_offset=None):
         if game_over:
             state["turn"] = "DONE"
         elif result == "MISS":
-            state["turn"] = "P2"      # only switch on miss
-        # HIT or SUNK: turn stays "P1"
+            state["turn"] = "P2"
+        # HIT / SUNK: stay on P1
     else:
         game_over = is_game_over(state["ships_p1"], state["hits_p2"])
         if game_over:
             state["turn"] = "DONE"
         elif result == "MISS":
-            state["turn"] = "P1"      # only switch on miss
-        # HIT or SUNK: turn stays "P2"
+            state["turn"] = "P1"
+        # HIT / SUNK: stay on P2
 
     if game_over:
         state["status"] = "DONE"
 
     return json.dumps({
-        "result": result,
-        "sunk": sunk,
-        "state": json.dumps(state),
-        "game_over": game_over
+        "result":    result,
+        "sunk":      sunk,
+        "state":     json.dumps(state),
+        "game_over": game_over,
     })
 
+
 def get_board_view(state_json, player):
+    """
+    Return own fleet view + enemy attack view for `player`.
+    own_view   – player's own board showing where enemy hit them
+    enemy_view – enemy's board showing only the player's own hits (ships hidden)
+    """
     state = json.loads(state_json)
     if player == "P1":
-        enemy_view = render_board(state["board_p2"], state["hits_p1"], hide_ships=True)
+        # P1's fleet with P2's hits on it; P2's board with P1's attacks marked
         own_view   = render_board(state["board_p1"], state["hits_p2"], hide_ships=False)
+        enemy_view = render_board(state["board_p2"], state["hits_p1"], hide_ships=True)
     else:
-        enemy_view = render_board(state["board_p1"], state["hits_p2"], hide_ships=True)
+																					   
         own_view   = render_board(state["board_p2"], state["hits_p1"], hide_ships=False)
-    return json.dumps({"enemy_view": enemy_view, "own_view": own_view})
-    
+        enemy_view = render_board(state["board_p1"], state["hits_p2"], hide_ships=True)
+    return json.dumps({"own_view": own_view, "enemy_view": enemy_view})
+
+
 def get_dual_board_message(state_json, player):
-    state = json.loads(state_json)
-    if player == "P2":
-        own_board   = render_board(state["board_p2"], state["hits_p1"], hide_ships=False)
-        attack_view = render_board(state["board_p1"], state["hits_p2"], hide_ships=True)
-    else:
-        own_board   = render_board(state["board_p1"], state["hits_p2"], hide_ships=False)
-        attack_view = render_board(state["board_p2"], state["hits_p1"], hide_ships=True)
-    msg = (
-        "YOUR FLEET:\n" + own_board +
-        "\n\nYOUR ATTACKS:\n" + attack_view
+    """
+    Convenience: returns a formatted string with both boards for Telegram.
+    Uses the same overlay logic as get_board_view.
+    """
+    views = json.loads(get_board_view(state_json, player))
+    return (
+        "YOUR FLEET:\n"   + views["own_view"] +
+        "\n\nYOUR ATTACKS:\n" + views["enemy_view"]
     )
-    return msg
+
+
+def result_message(result, sunk_ship=""):
+    """
+    Returns a human-readable result string.
+    """
+    if result == "HIT":
+        return "HIT! Well done."
+    if result == "MISS":
+        return "Miss."
+    if result == "SUNK":
+        return f"You sunk the {sunk_ship}!"
+    return ""
+
+
+def p1_take_turn(state_json, coord):
+    """
+    Convenience wrapper: apply P1's move AND return the updated board display
+    string ready for the next MessageBox — avoids a second Python scope in XAML.
+    Returns JSON: { result, sunk, state, game_over, board_display, result_msg }
+    """
+    move = json.loads(apply_move(state_json, coord, "P1"))
+    if move["result"] not in ("INVALID", "ALREADY_FIRED"):
+        views = json.loads(get_board_view(move["state"], "P1"))
+        move["board_display"] = (
+            "=== YOUR FLEET ===\n"   + views["own_view"] +
+            "\n\n=== YOUR ATTACKS ===\n" + views["enemy_view"]
+        )
+    else:
+        move["board_display"] = ""
+    move["result_msg"] = result_message(move["result"], move.get("sunk") or "")
+    return json.dumps(move)
+
+
+def p2_take_turn(state_json, coord, current_offset):
+    """
+    Convenience wrapper: apply P2's move AND return everything TakeTurnP2 needs
+    in one call — the dual board message, result string, updated state.
+    Returns JSON: { result, sunk, state, game_over, board_msg, result_msg }
+    """
+    move = json.loads(apply_move(state_json, coord, "P2", current_offset))
+    if move["result"] not in ("INVALID", "ALREADY_FIRED"):
+        move["board_msg"] = get_dual_board_message(move["state"], "P2")
+    else:
+        move["board_msg"] = ""
+    move["result_msg"] = result_message(move["result"], move.get("sunk") or "")
+    return json.dumps(move)
