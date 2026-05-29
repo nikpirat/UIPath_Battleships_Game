@@ -74,8 +74,10 @@ def render_board(board, hit_overlay, hide_ships=True):
 
 def check_sunk(hit_overlay, ship_positions, hit_row, hit_col):
     for ship_name, cells in ship_positions.items():
-        if (hit_row, hit_col) in cells:
-            if all(hit_overlay[r][c] == "X" for r, c in cells):
+        # cells may be lists after JSON round-trip, normalize to tuples
+        cells_normalized = [tuple(c) for c in cells]
+        if (hit_row, hit_col) in cells_normalized:
+            if all(hit_overlay[r][c] == "X" for r, c in cells_normalized):
                 return ship_name
     return None
 
@@ -84,7 +86,7 @@ def is_game_over(ship_positions, hit_overlay):
     return all(
         hit_overlay[r][c] == "X"
         for cells in ship_positions.values()
-        for r, c in cells
+        for r, c in (tuple(cell) for cell in cells)  # normalize
     )
 
 
@@ -233,8 +235,13 @@ def p1_take_turn(state_json, coord):
         )
         move["result_msg"] = result_message(move["result"], move["sunk"] or "")
     else:
-        move["board_display"] = ""
+        views = json.loads(get_board_view(state_json, "P1"))
+        move["board_display"] = (
+            "=== YOUR FLEET ===\n"   + views["own_view"] +
+            "\n\n=== YOUR ATTACKS ===\n" + views["enemy_view"]
+        )
         move["result_msg"] = ""
+        move["state"] = state_json  # keep state unchanged
     return json.dumps(move)
 
 
