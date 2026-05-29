@@ -103,7 +103,7 @@
       <AssemblyReference>System.Net.ServicePoint</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1047,3823" sap2010:WorkflowViewState.IdRef="Sequence_3">
+  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1047,7811" sap2010:WorkflowViewState.IdRef="Sequence_3">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="strBotToken" />
       <Variable x:TypeArguments="x:String" Name="strChatIdP2">
@@ -122,18 +122,14 @@
       <Variable x:TypeArguments="x:String" Default="scripts/telegram_helper.py" Name="strScriptHelperPath" />
       <Variable x:TypeArguments="x:Int32" Default="0" Name="intPollCount" />
       <Variable x:TypeArguments="x:Int32" Default="30" Name="intMaxPolls" />
-      <Variable x:TypeArguments="x:String" Name="strScriptGameEnginePath">
-        <Variable.Default>
-          <Literal x:TypeArguments="x:String">scripts/game_engine.py</Literal>
-        </Variable.Default>
-      </Variable>
+      <Variable x:TypeArguments="x:String" Default="scripts/game_engine.py" Name="strScriptGameEnginePath" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <Sequence DisplayName="Sequence" sap:VirtualizedContainerService.HintSize="592,3800" sap2010:WorkflowViewState.IdRef="Sequence_2">
+    <Sequence DisplayName="Sequence" sap:VirtualizedContainerService.HintSize="628,7788" sap2010:WorkflowViewState.IdRef="Sequence_2">
       <Sequence.Variables>
         <Variable x:TypeArguments="x:String" Name="strWinner" />
         <Variable x:TypeArguments="ss:SecureString" Name="strSecuredBotToken" />
@@ -141,10 +137,11 @@
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <ui:GetSecret TimeoutMS="{x:Null}" AssetName="BattleshipTelegramAPI" DisplayName="Get Secret" FolderPath="nikpirat2@gmail.com's workspace" sap:VirtualizedContainerService.HintSize="558,176" sap2010:WorkflowViewState.IdRef="GetSecret_2" Secret="[strSecuredBotToken]" />
-      <Assign sap:VirtualizedContainerService.HintSize="558,175" sap2010:WorkflowViewState.IdRef="Assign_20">
+      <ui:GetSecret TimeoutMS="{x:Null}" AssetName="BattleshipTelegramAPI" DisplayName="Get Secret" FolderPath="nikpirat2@gmail.com's workspace" sap:VirtualizedContainerService.HintSize="594,176" sap2010:WorkflowViewState.IdRef="GetSecret_2" Secret="[strSecuredBotToken]" />
+      <Assign sap:VirtualizedContainerService.HintSize="594,175" sap2010:WorkflowViewState.IdRef="Assign_20">
         <Assign.To>
           <OutArgument x:TypeArguments="x:String">[strBotToken]</OutArgument>
         </Assign.To>
@@ -152,10 +149,10 @@
           <InArgument x:TypeArguments="x:String">[New System.Net.NetworkCredential(String.Empty, strSecuredBotToken).Password]</InArgument>
         </Assign.Value>
       </Assign>
-      <Sequence DisplayName="Phase 1 – Handshake" sap:VirtualizedContainerService.HintSize="558,57" sap2010:WorkflowViewState.IdRef="Sequence_11">
+      <Sequence DisplayName="Phase 1 – Handshake" sap:VirtualizedContainerService.HintSize="594,4045" sap2010:WorkflowViewState.IdRef="Sequence_11">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
@@ -321,10 +318,10 @@
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
         </p:PythonScope>
-        <If Condition="[bHandshakeDone = False]" sap:VirtualizedContainerService.HintSize="560,57" sap2010:WorkflowViewState.IdRef="If_3">
+        <If Condition="[bHandshakeDone = False]" sap:VirtualizedContainerService.HintSize="560,403" sap2010:WorkflowViewState.IdRef="If_3">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
-              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               <x:Boolean x:Key="IsPinned">False</x:Boolean>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
@@ -350,7 +347,7 @@
         </If>
         <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="560,166" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Handshake result: &quot; + strChatIdP2]" />
       </Sequence>
-      <Sequence DisplayName="Phase 2 -Game Loop" sap:VirtualizedContainerService.HintSize="558,3309" sap2010:WorkflowViewState.IdRef="Sequence_12">
+      <Sequence DisplayName="Phase 2 - Game Loop" sap:VirtualizedContainerService.HintSize="594,3309" sap2010:WorkflowViewState.IdRef="Sequence_12">
         <Sequence.Variables>
           <Variable x:TypeArguments="x:String" Name="strP1BoardDisplay" />
           <Variable x:TypeArguments="x:Boolean" Name="bGameOver" />

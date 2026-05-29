@@ -9,10 +9,12 @@ def _base_url(bot_token):
 
 
 def send_message(bot_token, chat_id, text):
-    """Send a text message to `chat_id`."""
     url = f"{_base_url(bot_token)}/sendMessage"
-    r = requests.post(url, json={"chat_id": chat_id, "text": text})
-										
+    r = requests.post(url, json={
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "Markdown"
+    })
     return str(r.status_code)
 
 

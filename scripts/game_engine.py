@@ -53,18 +53,20 @@ def parse_coordinate(coord):
     return row, col
 
 def render_board(board, hit_overlay, hide_ships=True):
-    lines = ["  " + " ".join(str(c) for c in COLS)]
+    lines = ["   " + "  ".join(str(c) for c in COLS)]
     for row in ROWS:
         cells = []
         for col in [str(c) for c in COLS]:
             overlay = hit_overlay[row][col]
-            if overlay in ["X", "O"]:
-                cells.append(overlay)
+            if overlay == "X":
+                cells.append("[X]")
+            elif overlay == "O":
+                cells.append("[O]")
             elif board[row][col] == "S" and not hide_ships:
-                cells.append("S")
+                cells.append("[S]")
             else:
-                cells.append(".")
-        lines.append(row + " " + " ".join(cells))
+                cells.append("[~]")
+        lines.append(row + " " + "".join(cells))
     return "\n".join(lines)
 
 
@@ -94,8 +96,8 @@ def fire(board, hit_overlay, ship_positions, coord):
         return "ALREADY_FIRED", None
     if board[row][col] == "S":
         hit_overlay[row][col] = "X"
-        return "SUNK" if check_sunk(hit_overlay, ship_positions, row, col) else "HIT", \
-               check_sunk(hit_overlay, ship_positions, row, col)
+        sunk = check_sunk(hit_overlay, ship_positions, row, col)
+        return ("SUNK" if sunk else "HIT"), sunk
     hit_overlay[row][col] = "O"
     return "MISS", None
 
@@ -198,8 +200,8 @@ def get_dual_board_message(state_json, player):
     """
     views = json.loads(get_board_view(state_json, player))
     return (
-        "YOUR FLEET:\n"   + views["own_view"] +
-        "\n\nYOUR ATTACKS:\n" + views["enemy_view"]
+        "YOUR FLEET:\n```\n" + views["own_view"] + "\n```" +
+        "\n\nYOUR ATTACKS:\n```\n" + views["enemy_view"] + "\n```"
     )
 
 
@@ -229,9 +231,10 @@ def p1_take_turn(state_json, coord):
             "=== YOUR FLEET ===\n"   + views["own_view"] +
             "\n\n=== YOUR ATTACKS ===\n" + views["enemy_view"]
         )
+        move["result_msg"] = result_message(move["result"], move["sunk"] or "")
     else:
         move["board_display"] = ""
-    move["result_msg"] = result_message(move["result"], move.get("sunk") or "")
+        move["result_msg"] = ""
     return json.dumps(move)
 
 

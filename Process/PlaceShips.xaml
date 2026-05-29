@@ -166,7 +166,7 @@
                   <OutArgument x:TypeArguments="x:String">[strBoardMsg]</OutArgument>
                 </Assign.To>
                 <Assign.Value>
-                  <InArgument x:TypeArguments="x:String">["Your ships have been placed:" + Environment.NewLine + jViews("own_view").ToString()]</InArgument>
+                  <InArgument x:TypeArguments="x:String">["Your ships have been placed:" + Environment.NewLine + "```" + jViews("own_view").ToString() + "```"]</InArgument>
                 </Assign.Value>
               </Assign>
               <p:InvokeMethod Result="{x:Null}" DisplayName="Invoke Python Method" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" Instance="[pyloadedHelperScript]" Name="send_message" Parameters="[New Object() {in_BotToken, in_ChatIdP2, strBoardMsg}]" />
